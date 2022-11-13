@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Products with ChangeNotifier {
   final List<Product> _items = [
@@ -45,34 +47,51 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite == true).toList();
   }
 
-  void addProduct(Product product) {
-    final addProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl);
+  Future<void>addProduct(Product product) {
+    final url = Uri.https(
+        'shopapp-982d0-default-rtdb.firebaseio.com', '/products.json');
+    return http
+        .post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    )
+        .then((response) {
+      final addProduct = Product(
+          id: json.decode(response.body)['name'],
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl);
 
-        _items.add(addProduct);
-        notifyListeners();
+      _items.add(addProduct);
+      notifyListeners();
+    }).catchError((error){
+      throw error;
+    });
   }
 
-void updateProduct(String id ,Product newProduct){
-  final prodIndex = _items.indexWhere((element) => element.id ==id);
-  if(prodIndex>=0){
-  _items[prodIndex] = newProduct;
-  notifyListeners();
-  }else{
-    print('.....');
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex = _items.indexWhere((element) => element.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('.....');
+    }
   }
-}
 
-Product findById(String id){
-  return _items.firstWhere((element) => element.id == id);
-}
+  Product findById(String id) {
+    return _items.firstWhere((element) => element.id == id);
+  }
 
-  void removeProduct(String id){
-    _items.removeWhere((element) => element.id ==id);
+  void removeProduct(String id) {
+    _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 }
