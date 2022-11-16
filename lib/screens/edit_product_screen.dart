@@ -94,7 +94,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     bool validator = _form.currentState!.validate();
     
     if (validator) {
@@ -120,7 +120,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           showAlertDialog(context);
         });
       } else {
-        Provider.of<Products>(context, listen: false)
+         await Provider.of<Products>(context, listen: false)
             .updateProduct(_editProduct.id.toString(), _editProduct);
         Navigator.of(context).pop();
         setState(() {
