@@ -11,6 +11,7 @@ class UserProduct extends StatelessWidget {
   UserProduct(this.title, this.imageUrl, this.id);
 
   showAlertDialog(BuildContext context, String title, String id) {
+        var scaffoldMessenger = ScaffoldMessenger.of(context);
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -26,13 +27,21 @@ class UserProduct extends StatelessWidget {
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.green))),
           TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(false);
-              Provider.of<Products>(ctx, listen: false).removeProduct(id);
+              onPressed: () async {
+                try {
+                  Navigator.of(ctx).pop(false);
+                  await Provider.of<Products>(ctx, listen: false).removeProduct(id);
+                } catch (error) {
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('Deleting fail!'),
+                    ),
+                  );
+                }
               },
               child: const Text('Yes',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red))),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red))),
         ],
       ),
     );
@@ -49,7 +58,8 @@ class UserProduct extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(MyApp.editProductScreen,arguments: id);
+                Navigator.of(context)
+                    .pushNamed(MyApp.editProductScreen, arguments: id);
               },
               icon: Icon(Icons.edit),
               color: Theme.of(context).primaryColor,
