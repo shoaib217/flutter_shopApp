@@ -20,6 +20,10 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _init = true;
   var _isLoading = false;
   // final List<Product> loadedProduct = ;
+  var scaffoldMessenger;
+void init(BuildContext context){
+   scaffoldMessenger =ScaffoldMessenger.of(context);
+}
 
 @override
   void didChangeDependencies() {
@@ -31,6 +35,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           setState(() {
             _isLoading = false;
           });
+        }).catchError((error){
+          scaffoldMessenger.showSnackBar(SnackBar(content: Text(error.toString())));
+          setState(() {
+          _isLoading = false;
+          });
         });
     }
     _init = false;
@@ -39,6 +48,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    init(context);
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(

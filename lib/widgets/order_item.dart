@@ -6,7 +6,7 @@ import '../models/order.dart' as ord;
 
 class OrderItem extends StatefulWidget {
   final ord.OrderItem orderItem;
-    bool _expanded = false;
+  bool _expanded = false;
 
   OrderItem(this.orderItem);
 
@@ -23,12 +23,19 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         children: [
           ListTile(
+            onTap: () {
+              setState(() {
+                widget._expanded = !widget._expanded;
+              });
+            },
             title: Text('\$${widget.orderItem.amount.toStringAsFixed(2)}'),
             subtitle: Text(
               DateFormat('dd/MM/yyyy hh:mm').format(widget.orderItem.dateTime),
             ),
             trailing: IconButton(
-              icon: widget._expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+              icon: widget._expanded
+                  ? Icon(Icons.expand_less)
+                  : Icon(Icons.expand_more),
               onPressed: () {
                 setState(() {
                   widget._expanded = !widget._expanded;
@@ -38,14 +45,14 @@ class _OrderItemState extends State<OrderItem> {
           ),
           if (widget._expanded)
             Container(
-              height: min(widget.orderItem.products.length * 20.0 + 25, 180),
+              height: widget.orderItem.products.length * 60,
               child: ListView.builder(
                 itemBuilder: ((context, index) => ListTile(
                       leading: Text(widget.orderItem.products[index].title),
                       trailing: Text(
                           '${widget.orderItem.products[index].quantity}x \$${widget.orderItem.products[index].price}'),
                     )),
-                    itemCount: widget.orderItem.products.length,
+                itemCount: widget.orderItem.products.length,
               ),
             )
         ],

@@ -4,15 +4,22 @@ import 'package:shop_app/models/order.dart';
 import '../models/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+      var _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Your Cart')),
-      body: cart.totalAmount.toInt() != 0 ? Column(
+      body: _isLoading? Center(child: CircularProgressIndicator()): cart.totalAmount.toInt() != 0 ? Column(
         children: [
            Card(
             margin: const EdgeInsets.all(15),
@@ -30,10 +37,18 @@ class CartScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   TextButton(
-                    onPressed: (){
-                      Provider.of<Orders>(context,listen: false).addOrder(cart.items.values.toList(), cart.totalAmount);
+                    onPressed: cart.totalAmount<=0 || _isLoading? null : () async{
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await Provider.of<Orders>(context,listen: false).addOrder(cart.items.values.toList(), cart.totalAmount);
+                      setState(() {
+                        setState(() {
+                          _isLoading =false;
+                        });
+                      });
                       cart.clearCart();
-                      Navigator.of(context).pushReplacementNamed('/');
+                      // Navigator.of(context).pushReplacementNamed('/');
                     },
                     child: Text(
                       "Order Now",
