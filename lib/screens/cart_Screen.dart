@@ -19,7 +19,7 @@ class _CartScreenState extends State<CartScreen> {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Your Cart')),
-      body: _isLoading? Center(child: CircularProgressIndicator()): cart.totalAmount.toInt() != 0 ? Column(
+      body: _isLoading? const Center(child: CircularProgressIndicator()): cart.totalAmount.toInt() != 0 ? Column(
         children: [
            Card(
             margin: const EdgeInsets.all(15),
