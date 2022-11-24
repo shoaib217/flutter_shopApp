@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 import '../models/product.dart';
 import '../providers/products_provider.dart';
 
@@ -107,9 +108,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
     print(_editProduct.price);
     print(_editProduct.imageUrl); */
       print("reached");
+      final token = Provider.of<Auth>(context,listen: false).token;
       if (_editProduct.id == null) {
         Provider.of<Products>(context, listen: false)
-            .addProduct(_editProduct)
+            .addProduct(_editProduct,token)
             .then((_) {
           Navigator.of(context).pop();
           _isLoading = false;
@@ -121,7 +123,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         });
       } else {
          await Provider.of<Products>(context, listen: false)
-            .updateProduct(_editProduct.id.toString(), _editProduct);
+            .updateProduct(_editProduct.id.toString(), _editProduct,token);
         Navigator.of(context).pop();
         setState(() {
           _isLoading = false;

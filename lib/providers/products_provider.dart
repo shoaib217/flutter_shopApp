@@ -48,9 +48,10 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite == true).toList();
   }
 
-  Future<void>fetchData() async{
-    final url = Uri.https(
-        'shopapp-982d0-default-rtdb.firebaseio.com', '/products.json');
+  Future<void>fetchData(String? token) async{
+    print('token - $token');
+    final url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token');
     try{
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String,dynamic>;
@@ -77,9 +78,9 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void>addProduct(Product product) {
-    final url = Uri.https(
-        'shopapp-982d0-default-rtdb.firebaseio.com', '/products.json');
+  Future<void>addProduct(Product product, String? token) {
+    final url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token');
     return http
         .post(
       url,
@@ -106,11 +107,11 @@ class Products with ChangeNotifier {
     });
   }
 
-  Future<void> updateProduct(String id, Product newProduct) async{
+  Future<void> updateProduct(String id, Product newProduct, String? token) async{
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
-      final url = Uri.https(
-        'shopapp-982d0-default-rtdb.firebaseio.com', '/products/$id.json');
+      final url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products/$id.json?auth=$token');
       
       await http.patch(url,body: json.encode({
         'title': newProduct.title,
@@ -129,9 +130,9 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  Future<void> removeProduct(String id) async {
-    final url = Uri.https(
-        'shopapp-982d0-default-rtdb.firebaseio.com', '/products/$id.json');
+  Future<void> removeProduct(String id, String? token) async {
+    final url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products/$id.json?auth=$token');
     final existingProductIndex =_items.indexWhere((element) => element.id ==id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeWhere((element) => element.id == id);

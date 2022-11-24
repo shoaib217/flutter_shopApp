@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/main.dart';
 import 'package:shop_app/providers/products_provider.dart';
+import '../providers/auth.dart';
 
 class UserProduct extends StatelessWidget {
   String title;
@@ -12,6 +13,7 @@ class UserProduct extends StatelessWidget {
 
   showAlertDialog(BuildContext context, String title, String id) {
         var scaffoldMessenger = ScaffoldMessenger.of(context);
+        final token = Provider.of<Auth>(context,listen: false).token;
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -30,7 +32,7 @@ class UserProduct extends StatelessWidget {
               onPressed: () async {
                 try {
                   Navigator.of(ctx).pop(false);
-                  await Provider.of<Products>(ctx, listen: false).removeProduct(id);
+                  await Provider.of<Products>(ctx, listen: false).removeProduct(id,token);
                 } catch (error) {
                   scaffoldMessenger.showSnackBar(
                     const SnackBar(

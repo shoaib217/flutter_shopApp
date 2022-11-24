@@ -31,10 +31,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Products(),
+          create: (ctx) => Auth(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => Auth(),
+          create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
@@ -43,20 +43,22 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Orders(),
         ),
       ],
-      child: MaterialApp(
-        title: 'A1 Collection',
-        theme: ThemeData(
-            fontFamily: 'Lato',
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.cyan)
-                .copyWith(secondary: Colors.orange)),
-        home: AuthScreen(),
-        routes: {
-          productDetailScreen: (context) => ProductDetailScreen(),
-          cartScreen: (context) => const CartScreen(),
-          orderScreen: ((context) => OrderScreen()),
-          userProductScreen: (context) => UserProductScreen(),
-          editProductScreen: ((context) => const EditProductScreen())
-        },
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'A1 Collection',
+          theme: ThemeData(
+              fontFamily: 'Lato',
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.cyan)
+                  .copyWith(secondary: Colors.orange)),
+          home: auth.isAuthenticated ? ProductOverviewScreen() : AuthScreen(),
+          routes: {
+            productDetailScreen: (ctx) => ProductDetailScreen(),
+            cartScreen: (ctx) => const CartScreen(),
+            orderScreen: ((ctx) => OrderScreen()),
+            userProductScreen: (ctx) => UserProductScreen(),
+            editProductScreen: ((ctx) => const EditProductScreen())
+          },
+        ),
       ),
     );
   }

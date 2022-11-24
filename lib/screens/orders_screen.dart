@@ -5,12 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/order.dart' show Orders;
 import '../widgets/order_item.dart';
 import '../widgets/app_drawer.dart';
+import '../providers/auth.dart';
 
 class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('building orders');
     // final orderData = Provider.of<Orders>(context);
+    final token = Provider.of<Auth>(context).token;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Orders'),
@@ -18,7 +20,7 @@ class OrderScreen extends StatelessWidget {
       drawer: AppDrawer(),
       body: FutureBuilder(
           future:
-              Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
+              Provider.of<Orders>(context, listen: false).fetchAndSetOrders(token),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

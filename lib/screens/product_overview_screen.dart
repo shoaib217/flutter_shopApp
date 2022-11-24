@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/main.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/widgets/app_drawer.dart';
 import '../widgets/product_item.dart';
 import '../providers/products_provider.dart';
@@ -28,10 +29,11 @@ void init(BuildContext context){
 @override
   void didChangeDependencies() {
     if(_init){
+      final token = Provider.of<Auth>(context,listen: false).token;
       setState(() {
         _isLoading = true;
       });
-        Provider.of<Products>(context).fetchData().then((_) {
+        Provider.of<Products>(context).fetchData(token).then((_) {
           setState(() {
             _isLoading = false;
           });

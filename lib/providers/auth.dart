@@ -7,9 +7,22 @@ import 'dart:convert';
 import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  late String _token;
-  late String _userId;
-  late DateTime _expiryDate;
+  String? _token;
+  String? _userId;
+  DateTime? _expiryDate;
+
+
+  bool get isAuthenticated {
+    return token !=null;
+  }
+
+
+  String? get token{
+    if(_expiryDate != null && _expiryDate!.isAfter(DateTime.now()) && _token !=null){
+      return _token;
+    }
+    return null;
+  }
 
   Future<void> signup(String email, String password) async {
     final url = Uri.parse(
@@ -52,6 +65,16 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']);
       }
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
       throw error;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/main.dart';
 import 'package:shop_app/models/product.dart';
+import 'package:shop_app/providers/auth.dart';
 import '../models/cart.dart';
 
 class ProductItem extends StatelessWidget {
@@ -9,6 +10,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
+    final token = Provider.of<Auth>(context).token;
     return GestureDetector(
       onTap: () => Navigator.of(context)
           .pushNamed(MyApp.productDetailScreen, arguments: product),
@@ -21,7 +23,7 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: (() {
-                product.toggleFavoriteStatus();
+                product.toggleFavoriteStatus(token);
               }),
             ),
             title: Text(

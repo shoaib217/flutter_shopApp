@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:shop_app/main.dart';
+import 'package:shop_app/providers/auth.dart';
 import '../widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
 import '../providers/products_provider.dart';
@@ -10,7 +11,9 @@ import '../widgets/user_product.dart';
 class UserProductScreen extends StatelessWidget {
 
 Future<void> _refreshProduct(BuildContext context) async {
-await Provider.of<Products>(context,listen: false).fetchData();
+      final token = Provider.of<Auth>(context,listen: false).token;
+
+await Provider.of<Products>(context,listen: false).fetchData(token);
 }
 
   @override

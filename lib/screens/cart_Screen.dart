@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/order.dart';
 import '../models/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
+import '../providers/auth.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -17,6 +18,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final token = Provider.of<Auth>(context).token;
     return Scaffold(
       appBar: AppBar(title: const Text('Your Cart')),
       body: _isLoading? const Center(child: CircularProgressIndicator()): cart.totalAmount.toInt() != 0 ? Column(
@@ -41,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
                       setState(() {
                         _isLoading = true;
                       });
-                      await Provider.of<Orders>(context,listen: false).addOrder(cart.items.values.toList(), cart.totalAmount);
+                      await Provider.of<Orders>(context,listen: false).addOrder(cart.items.values.toList(), cart.totalAmount,token);
                       setState(() {
                         setState(() {
                           _isLoading =false;
