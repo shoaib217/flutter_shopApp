@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-class Product with ChangeNotifier{
+class Product with ChangeNotifier {
   final String? id;
   final String title;
   final String description;
@@ -19,21 +19,16 @@ class Product with ChangeNotifier{
       required this.imageUrl,
       this.isFavorite = false});
 
-Future<void> toggleFavoriteStatus(String? token) async{
-  final oldStatus = isFavorite;
-  isFavorite = !isFavorite;
-  notifyListeners();
-   final url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products/$id.json?auth=$token');
-try{
-  await http.patch(url,body: json.encode({
-    'isFavorite': isFavorite.toString()
-  }));
-
-}catch(error){
-  isFavorite = oldStatus;
+  Future<void> toggleFavoriteStatus(String? token, String? userId) async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    notifyListeners();
+    final url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/UserFavorites/$userId/$id.json?auth=$token');
+    try {
+      await http.put(url, body: json.encode(isFavorite));
+    } catch (error) {
+      isFavorite = oldStatus;
+    }
+  }
 }
-}
-
-}
-

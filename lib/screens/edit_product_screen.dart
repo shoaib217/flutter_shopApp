@@ -109,9 +109,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
     print(_editProduct.imageUrl); */
       print("reached");
       final token = Provider.of<Auth>(context,listen: false).token;
+      final userId = Provider.of<Auth>(context,listen: false).userId;
       if (_editProduct.id == null) {
         Provider.of<Products>(context, listen: false)
-            .addProduct(_editProduct,token)
+            .addProduct(_editProduct,token,userId)
             .then((_) {
           Navigator.of(context).pop();
           _isLoading = false;

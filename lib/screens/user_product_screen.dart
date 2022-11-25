@@ -12,8 +12,9 @@ class UserProductScreen extends StatelessWidget {
 
 Future<void> _refreshProduct(BuildContext context) async {
       final token = Provider.of<Auth>(context,listen: false).token;
+      final userId = Provider.of<Auth>(context,listen: false).userId;
 
-await Provider.of<Products>(context,listen: false).fetchData(token);
+await Provider.of<Products>(context,listen: false).fetchData(token,userId);
 }
 
   @override

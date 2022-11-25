@@ -30,10 +30,11 @@ void init(BuildContext context){
   void didChangeDependencies() {
     if(_init){
       final token = Provider.of<Auth>(context,listen: false).token;
+      final userId = Provider.of<Auth>(context,listen: false).userId;
       setState(() {
         _isLoading = true;
       });
-        Provider.of<Products>(context).fetchData(token).then((_) {
+        Provider.of<Products>(context).fetchData(token,userId).then((_) {
           setState(() {
             _isLoading = false;
           });

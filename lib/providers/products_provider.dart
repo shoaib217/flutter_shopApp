@@ -48,16 +48,21 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite == true).toList();
   }
 
-  Future<void>fetchData(String? token) async{
+  Future<void>fetchData(String? token,String? userId) async{
     print('token - $token');
-    final url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token');
+    var url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token&orderBy="creatorId"&equalTo="$userId"');
     try{
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String,dynamic>;
       if(extractData ==null){
         return;
       }
+      url = Uri.parse(
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/UserFavorites/$userId.json?auth=$token');
+
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProduct =[];
       extractData.forEach((prodID, value) { 
         loadedProduct.add(Product(
@@ -65,7 +70,7 @@ class Products with ChangeNotifier {
           title: value['title'],
           description: value['description'],
           price: value['price'],
-          isFavorite: value['isFavorite'].toString() == 'false'? false:true,
+          isFavorite: favoriteData == null ? false: favoriteData[prodID] ?? false,
           imageUrl: value['imageUrl']
         ));
       });
@@ -78,7 +83,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void>addProduct(Product product, String? token) {
+  Future<void>addProduct(Product product, String? token,String? userId) {
     final url = Uri.parse(
         'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token');
     return http
@@ -89,7 +94,7 @@ class Products with ChangeNotifier {
         'description': product.description,
         'imageUrl': product.imageUrl,
         'price': product.price,
-        'isFavorite': product.isFavorite,
+        'creatorId': userId
       }),
     )
         .then((response) {
