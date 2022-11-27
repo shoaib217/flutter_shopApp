@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_app/models/http_exception.dart';
 
 import '../providers/auth.dart';

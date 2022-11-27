@@ -20,9 +20,9 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Future<void> fetchAndSetOrders(String? token) async {
+  Future<void> fetchAndSetOrders(String? token, String? userId) async {
     final url =
-        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders.json?auth=$token');
+        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$token');
 
     final response = await http.get(url);
     print(json.decode(response.body));
@@ -55,9 +55,9 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total, String? token) async {
+  Future<void> addOrder(List<CartItem> cartProducts, double total, String? token, String? userId) async {
     final url =
-        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders.json?auth=$token');
+        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$token');
 
     final response = await http.post(
       url,

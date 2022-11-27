@@ -12,15 +12,15 @@ class OrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print('building orders');
     // final orderData = Provider.of<Orders>(context);
-    final token = Provider.of<Auth>(context).token;
+    final auth = Provider.of<Auth>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Orders'),
       ),
       drawer: AppDrawer(),
       body: FutureBuilder(
-          future:
-              Provider.of<Orders>(context, listen: false).fetchAndSetOrders(token),
+          future: Provider.of<Orders>(context, listen: false)
+              .fetchAndSetOrders(auth.token, auth.userId),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -29,7 +29,13 @@ class OrderScreen extends StatelessWidget {
             } else {
               if (snapshot.error != null) {
                 return const Center(
-                  child: Text('An Error Occurred!'),
+                  child: Text(
+                    'No Orders Found.',
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.bold),
+                  ),
                 );
               } else {
                 return Consumer<Orders>(

@@ -48,10 +48,11 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite == true).toList();
   }
 
-  Future<void>fetchData(String? token,String? userId) async{
+  Future<void>fetchData(String? token,String? userId,[filterUser = false]) async{
     print('token - $token');
+    final filterString = filterUser? 'orderBy="creatorId"&equalTo="$userId':'';
     var url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token&orderBy="creatorId"&equalTo="$userId"');
+        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token&$filterString"');
     try{
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String,dynamic>;
