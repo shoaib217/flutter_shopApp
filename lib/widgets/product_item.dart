@@ -24,7 +24,7 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: (() {
-                product.toggleFavoriteStatus(token,userId);
+                product.toggleFavoriteStatus(token, userId);
               }),
             ),
             title: Text(
@@ -35,16 +35,29 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               icon: const Icon(Icons.shopping_cart),
               onPressed: (() {
-                cart.addItem(product.id.toString(), product.price, product.title);
+                cart.addItem(
+                    product.id.toString(), product.price, product.title);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added Item To Cart!'),duration: Duration(seconds: 2),action: SnackBarAction(label: 'UNDO',onPressed: (() => cart.removeSingleItem(product.id.toString())),),));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Added Item To Cart!'),
+                  duration: Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: (() =>
+                        cart.removeSingleItem(product.id.toString())),
+                  ),
+                ));
               }),
             ),
             backgroundColor: Colors.black87,
           ),
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id.toString(),
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/product-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

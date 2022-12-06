@@ -43,18 +43,19 @@ class _OrderItemState extends State<OrderItem> {
               },
             ),
           ),
-          if (widget._expanded)
-            Container(
-              height: widget.orderItem.products.length * 60,
-              child: ListView.builder(
-                itemBuilder: ((context, index) => ListTile(
-                      leading: Text(widget.orderItem.products[index].title),
-                      trailing: Text(
-                          '${widget.orderItem.products[index].quantity}x \$${widget.orderItem.products[index].price}'),
-                    )),
-                itemCount: widget.orderItem.products.length,
-              ),
-            )
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height:
+                widget._expanded ? widget.orderItem.products.length * 60 : 5,
+            child: ListView.builder(
+              itemBuilder: ((context, index) => ListTile(
+                    leading: Text(widget.orderItem.products[index].title),
+                    trailing: Text(
+                        '${widget.orderItem.products[index].quantity}x \$${widget.orderItem.products[index].price}'),
+                  )),
+              itemCount: widget.orderItem.products.length,
+            ),
+          )
         ],
       ),
     );
