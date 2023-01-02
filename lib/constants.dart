@@ -1,0 +1,1 @@
+const base_url = 'https://shopappflutter-762da-default-rtdb.firebaseio.com';

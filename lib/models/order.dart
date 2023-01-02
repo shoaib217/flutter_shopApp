@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/constants.dart';
 import 'dart:convert';
 
 import './cart.dart';
@@ -22,7 +23,7 @@ class Orders with ChangeNotifier {
 
   Future<void> fetchAndSetOrders(String? token, String? userId) async {
     final url =
-        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$token');
+        Uri.parse('$base_url/orders/$userId.json?auth=$token');
 
     final response = await http.get(url);
     print(json.decode(response.body));
@@ -57,7 +58,7 @@ class Orders with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total, String? token, String? userId) async {
     final url =
-        Uri.parse('https://shopapp-982d0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$token');
+        Uri.parse('$base_url/orders/$userId.json?auth=$token');
 
     final response = await http.post(
       url,

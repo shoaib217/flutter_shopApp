@@ -3,6 +3,7 @@ import 'package:shop_app/models/http_exception.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../constants.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [
@@ -52,7 +53,7 @@ class Products with ChangeNotifier {
     print('token - $token');
     final filterString = filterUser? 'orderBy="creatorId"&equalTo="$userId':'';
     var url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token&$filterString"');
+        '$base_url/products.json?auth=$token&$filterString"');
     try{
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String,dynamic>;
@@ -60,7 +61,7 @@ class Products with ChangeNotifier {
         return;
       }
       url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/UserFavorites/$userId.json?auth=$token');
+        '$base_url/UserFavorites/$userId.json?auth=$token');
 
       final favoriteResponse = await http.get(url);
       final favoriteData = json.decode(favoriteResponse.body);
@@ -86,7 +87,7 @@ class Products with ChangeNotifier {
 
   Future<void>addProduct(Product product, String? token,String? userId) {
     final url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products.json?auth=$token');
+        '$base_url/products.json?auth=$token');
     return http
         .post(
       url,
@@ -117,7 +118,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
       final url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products/$id.json?auth=$token');
+        '$base_url/products/$id.json?auth=$token');
       
       await http.patch(url,body: json.encode({
         'title': newProduct.title,
@@ -138,7 +139,7 @@ class Products with ChangeNotifier {
 
   Future<void> removeProduct(String id, String? token) async {
     final url = Uri.parse(
-        'https://shopapp-982d0-default-rtdb.firebaseio.com/products/$id.json?auth=$token');
+        '$base_url/products/$id.json?auth=$token');
     final existingProductIndex =_items.indexWhere((element) => element.id ==id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeWhere((element) => element.id == id);
