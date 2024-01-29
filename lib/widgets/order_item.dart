@@ -49,7 +49,18 @@ class _OrderItemState extends State<OrderItem> {
                 widget._expanded ? widget.orderItem.products.length * 60 : 5,
             child: ListView.builder(
               itemBuilder: ((context, index) => ListTile(
-                    leading: Text(widget.orderItem.products[index].title),
+                    leading: Container(
+                      alignment: Alignment.center,
+                      height: 25,
+                      width: 25,
+                      child: widget.orderItem.products[index].imageUrl.isEmpty
+                          ? const Icon(Icons.image)
+                          : Image.network(
+                              widget.orderItem.products[index].imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                    title: Text(widget.orderItem.products[index].title),
                     trailing: Text(
                         '${widget.orderItem.products[index].quantity}x \$${widget.orderItem.products[index].price}'),
                   )),

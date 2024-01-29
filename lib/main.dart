@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'A1 Collection',
           theme: ThemeData(
+            useMaterial3: false,
             fontFamily: 'Lato',
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.cyan)
                 .copyWith(secondary: Colors.orange),

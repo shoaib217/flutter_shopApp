@@ -11,7 +11,11 @@ class OrderItem {
   final List<CartItem> products;
   final DateTime dateTime;
 
-  OrderItem({required this.id, required this.amount, required this.products, required this.dateTime});
+  OrderItem(
+      {required this.id,
+      required this.amount,
+      required this.products,
+      required this.dateTime});
 }
 
 class Orders with ChangeNotifier {
@@ -22,8 +26,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders(String? token, String? userId) async {
-    final url =
-        Uri.parse('$base_url/orders/$userId.json?auth=$token');
+    final url = Uri.parse('$base_url/orders/$userId.json?auth=$token');
 
     final response = await http.get(url);
     print(json.decode(response.body));
@@ -36,14 +39,15 @@ class Orders with ChangeNotifier {
       loadedOrders.add(
         OrderItem(
           id: orderId,
-          amount : orderData['amount'],
-          dateTime: DateTime.parse(orderData['dateTime']) ,
+          amount: orderData['amount'],
+          dateTime: DateTime.parse(orderData['dateTime']),
           products: (orderData['products'] as List<dynamic>)
               .map(
                 (item) => CartItem(
                   id: item['id'],
                   title: item['title'],
                   price: item['price'],
+                  imageUrl: item['imageUrl'] ?? "",
                   quantity: item['quantity'],
                 ),
               )
@@ -56,9 +60,9 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total, String? token, String? userId) async {
-    final url =
-        Uri.parse('$base_url/orders/$userId.json?auth=$token');
+  Future<void> addOrder(List<CartItem> cartProducts, double total,
+      String? token, String? userId) async {
+    final url = Uri.parse('$base_url/orders/$userId.json?auth=$token');
 
     final response = await http.post(
       url,
@@ -72,7 +76,8 @@ class Orders with ChangeNotifier {
                   'id': cp.id,
                   'price': cp.price,
                   'quantity': cp.quantity,
-                  'title': cp.title
+                  'title': cp.title,
+                  'imageUrl': cp.imageUrl
                 },
               )
               .toList(),
@@ -81,7 +86,10 @@ class Orders with ChangeNotifier {
     );
     _orders.insert(
         0,
-        OrderItem(id: json.decode(response.body)['name'], amount: total, products: cartProducts,
+        OrderItem(
+            id: json.decode(response.body)['name'],
+            amount: total,
+            products: cartProducts,
             dateTime: DateTime.now()));
 
     notifyListeners();

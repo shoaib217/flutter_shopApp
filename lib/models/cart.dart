@@ -4,18 +4,20 @@ import 'package:flutter/foundation.dart';
 class CartItem {
   final String? id;
   final String title;
+  final String imageUrl;
   final int quantity;
   final double price;
 
   CartItem(
       {required this.id,
       required this.title,
+      required this.imageUrl,
       required this.quantity,
       required this.price});
 }
 
 class Cart with ChangeNotifier {
- Map<String, CartItem> _items = {};
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {..._items};
@@ -25,20 +27,22 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
-double get totalAmount{
-  var total = 0.0;
-  _items.forEach((key, value) {
-    total += value.price * value.quantity;
-  });
-return total;
-}
-  void addItem(String productId, double price, String title) {
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach((key, value) {
+      total += value.price * value.quantity;
+    });
+    return total;
+  }
+
+  void addItem(String productId, double price, String title, String imgUrl) {
     if (_items.containsKey(productId)) {
       _items.update(
           productId,
           (existingCartItem) => CartItem(
               id: existingCartItem.id,
               title: existingCartItem.title,
+              imageUrl: existingCartItem.imageUrl,
               quantity: existingCartItem.quantity + 1,
               price: price));
     } else {
@@ -48,29 +52,37 @@ return total;
               id: DateTime.now().toString(),
               title: title,
               quantity: 1,
+              imageUrl: imgUrl,
               price: price));
     }
     notifyListeners();
   }
 
-  void removeItem(String productId){
+  void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
   }
 
-  void removeSingleItem(String productId){
-    if(!_items.containsKey(productId)){
+  void removeSingleItem(String productId) {
+    if (!_items.containsKey(productId)) {
       return;
     }
-    if(_items[productId]!.quantity > 1){
-      _items.update(productId, (existingCartItem) => CartItem(id: existingCartItem.id, title: existingCartItem.title, quantity: existingCartItem.quantity - 1, price: existingCartItem.price));
-    }else{
+    if (_items[productId]!.quantity > 1) {
+      _items.update(
+          productId,
+          (existingCartItem) => CartItem(
+              id: existingCartItem.id,
+              title: existingCartItem.title,
+              imageUrl: existingCartItem.imageUrl,
+              quantity: existingCartItem.quantity - 1,
+              price: existingCartItem.price));
+    } else {
       _items.remove(productId);
     }
     notifyListeners();
   }
 
-  void clearCart(){
+  void clearCart() {
     _items = {};
     notifyListeners();
   }
